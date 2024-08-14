@@ -29,7 +29,18 @@ function App() {
     newItem.done = false; // done 초기화
 
     setTodoItems([...todoItems, newItem]);
-  }
+    console.log("newItem >>> ", newItem);
+  };
+
+  const deleteItem = (targetItem) => {
+    console.log("targetItem >>", targetItem); // {id: 1, title: 'my todo1', done: false}
+
+    const newTodoItems = todoItems.filter((e) => {
+      return e.id !== targetItem.id;
+    });
+    setTodoItems(newTodoItems);
+  };
+
 
   return (
     <div className="App">
@@ -39,7 +50,7 @@ function App() {
       <Todo /> */}
       {todoItems.map((item) => {
         console.log(item);
-        return <Todo key={item.id} item={item}  />
+        return <Todo key={item.id} item={item} deleteItem={deleteItem} />
       })}
     </div>
   );
