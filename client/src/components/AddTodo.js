@@ -9,9 +9,10 @@ export const AddTodo = ({addItem}) => {
     addItem(todoItem); // addItem 함수 사용
     setTodoItem({
         title: '', // 상태 초기화
-    })
-  }
+    });
+  };
 
+  // 과제1) add enter키로 실행
   return (
     <div className='AddTodo'>
       <input
