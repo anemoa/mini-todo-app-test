@@ -12,7 +12,13 @@ export const AddTodo = ({addItem}) => {
     });
   };
 
+
   // 과제1) add enter키로 실행
+  const enterKeyEventHandler = (e) => {
+    if(e.code == 'Enter'){
+        onBtnClick();
+    }
+  }
   return (
     <div className='AddTodo'>
       <input
@@ -20,6 +26,7 @@ export const AddTodo = ({addItem}) => {
         placeholder='Add your todo'
         value={todoItem.title}
         onChange={(e) => setTodoItem({ title: e.target.value })}
+        onKeyDown={enterKeyEventHandler}
       />
       <button onClick={onBtnClick}>ADD </button>
     </div>
