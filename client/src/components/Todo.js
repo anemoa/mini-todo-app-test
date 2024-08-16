@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import '../styles/Todo.scss';
 
-export const Todo = ({ item, deleteItem }) => {
+export const Todo = ({ item, deleteItem, updateItem }) => {
 //   console.log('item >>> ', item); // {id: 1, title: 'my todo1', done: false}
 
   const [todoItem, setTodoItem] = useState(item);
@@ -20,6 +21,7 @@ export const Todo = ({ item, deleteItem }) => {
   const enterKeyEventHandler = (e) => {
     if(e.key === 'Enter'){
         setReadOnly(true);
+        updateItem(todoItem);
     }
   };
 
@@ -38,13 +40,20 @@ export const Todo = ({ item, deleteItem }) => {
 
   //checkbox 업데이트
   const checkboxEventHandler = (e) => {
-    
+    // rest: id, title 정보
     const {done, ...rest} = todoItem;
-    setTodoItem({
-        done: e.target.checked,
-        ...rest,
-    });
 
+    const updatedItem = {
+      done: e.target.checked,
+      ...rest,
+    };
+
+    // setTodoItem({
+    //     done: e.target.checked,
+    //     ...rest,
+    // });
+    setTodoItem(updateItem);
+    updateItem(updatedItem); // 수정2 - 체크 박스 변경시 저장
     console.log(e.target.checked);
   };
 

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import '../styles/AddTodo.scss';
 
 export const AddTodo = ({addItem}) => {
   const [todoItem, setTodoItem] = useState({
@@ -15,10 +16,11 @@ export const AddTodo = ({addItem}) => {
 
   // 과제1) add enter키로 실행
   const enterKeyEventHandler = (e) => {
-    if(e.code == 'Enter'){
+    if(e.key === 'Enter'){
         onBtnClick();
     }
-  }
+  };
+
   return (
     <div className='AddTodo'>
       <input
