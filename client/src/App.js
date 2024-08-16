@@ -14,7 +14,7 @@ function App() {
     console.log('첫 렌더링 완료!');
 
     const getTodos = async () => {
-      let res = await axios.get('http://localhost:8080/api/todos');
+      let res = await axios.get(`${process.env.REACT_APP_DB_HOST}/api/todos`);
       setTodoItems(res.data);
     };
     getTodos();
@@ -28,14 +28,17 @@ function App() {
   const addItem = async (newItem) => {
     // newItem.id = todoItems.length + 1; // key를 위한 id 추가
     // newItem.done = false; // done 초기화
-
+    console.log("실행");
     // setTodoItems([...todoItems, newItem]);
     // console.log("newItem >>> ", newItem);
     // 위의 4줄은 프론트 단에서 확인하기 위해서 만든것
 
-    const res = await axios.post('http://localhost:8080/api/todo', newItem);
+    const res = await axios.post(`${process.env.REACT_APP_DB_HOST}/api/todo`, newItem);
     setTodoItems([...todoItems, res.data]);
+    console.log("...todoItems >>>> ", ...todoItems);
+    console.log("res.data >>>>> ", res.dataß);
   };
+  
 
   // Delete API
   const deleteItem = async (targetItem) => {
@@ -43,7 +46,7 @@ function App() {
     // setTodoItems(newTodoItems);
     console.log('targetItem >>>> ', targetItem);
 
-    await axios.delete(`http://localhost:8080/api/todo/${targetItem.id}`);
+    await axios.delete(`${process.env.REACT_APP_DB_HOST}/api/todo/${targetItem.id}`);
 
     const newTodoItems = todoItems.filter((e) => {
       return e.id !== targetItem.id;
@@ -61,7 +64,7 @@ function App() {
     console.log('targetItem >> ', targetItem);
 
     await axios.patch(
-      `http://localhost:8080/api/todo/${targetItem.id}`,
+      `${process.env.REACT_APP_DB_HOST}/api/todo/${targetItem.id}`,
       targetItem
     );
   };

@@ -22,6 +22,7 @@ exports.createTodo = async (req, res) => {
             raw: true,
         });
         console.log('newTodo >>> ', newTodo);
+        res.send(newTodo);
     } catch(err){
         res.send(err);
     }
