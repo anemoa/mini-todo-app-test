@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import '../styles/Todo.scss';
 
 export const Todo = ({ item, deleteItem, updateItem }) => {
@@ -7,14 +7,14 @@ export const Todo = ({ item, deleteItem, updateItem }) => {
   const [todoItem, setTodoItem] = useState(item);
   const [readOnly, setReadOnly] = useState(true);
 
-  const onDeleteBtnClick = () => {
+  const onDeleteBtnClick = useCallback(() => {
     deleteItem(todoItem);
-  };
+  }, [deleteItem]);
 
   // title 클릭시 실행될 함수: readOnly를 false로 변경
-  const offReadOnlyMode = () => {
+  const offReadOnlyMode = useCallback(() => {
     setReadOnly(false);
-  };
+  }, []);
 
 
   // readOnly true: enter키 누르면 readOnly를 true로 변경

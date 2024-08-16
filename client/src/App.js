@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Todo } from './components/Todo';
 import { AddTodo } from './components/AddTodo';
 import './styles/App.scss';
 import axios from 'axios';
+import {API_BASE_URL} from './app-config.js'
 
 function App() {
   const [todoItems, setTodoItems] = useState([]);
@@ -12,9 +13,16 @@ function App() {
 
   useEffect(() => {
     console.log('첫 렌더링 완료!');
+    // [env 버전]
+    console.log(process.env.REACT_APP_DB_HOST);
+
+    //[app-config.js 버전]
+
+    console.log(`app-config >>> ${API_BASE_URL}`);
+    
 
     const getTodos = async () => {
-      let res = await axios.get(`${process.env.REACT_APP_DB_HOST}/api/todos`);
+      let res = await axios.get(`${API_BASE_URL}/api/todos`);
       setTodoItems(res.data);
     };
     getTodos();
@@ -34,9 +42,16 @@ function App() {
     // 위의 4줄은 프론트 단에서 확인하기 위해서 만든것
 
     const res = await axios.post(`${process.env.REACT_APP_DB_HOST}/api/todo`, newItem);
-    setTodoItems([...todoItems, res.data]);
-    console.log("...todoItems >>>> ", ...todoItems);
-    console.log("res.data >>>>> ", res.dataß);
+
+    // 현재 API 호출 후 응답을 기다리지 않고 바로 상태 업데이트를 진행하면,
+    // 네트워크 지연 등으로 예상치 못한 문제가 발생할 수 있습니다.
+    // 따라서 비동기 작업 처리를 제대로 해주는 것이 좋다.
+    if(res.status === 200){
+      setTodoItems([...todoItems, res.data]);
+    }else{
+      console.error('failed to add item');
+    }
+
   };
   
 
@@ -46,12 +61,17 @@ function App() {
     // setTodoItems(newTodoItems);
     console.log('targetItem >>>> ', targetItem);
 
-    await axios.delete(`${process.env.REACT_APP_DB_HOST}/api/todo/${targetItem.id}`);
+    const res = await axios.delete(`${process.env.REACT_APP_DB_HOST}/api/todo/${targetItem.id}`);
 
-    const newTodoItems = todoItems.filter((e) => {
-      return e.id !== targetItem.id;
-    });
-    setTodoItems(newTodoItems);
+    if (res.status === 200){
+      const newTodoItems = todoItems.filter((e) => {
+        return e.id !== targetItem.id;
+      });
+      setTodoItems(newTodoItems);
+    } else{
+      console.error('delete error');
+    }
+
   };
 
   // Update API
@@ -63,29 +83,38 @@ function App() {
   const updateItem = async (targetItem) => {
     console.log('targetItem >> ', targetItem);
 
-    await axios.patch(
+    const res = await axios.patch(
       `${process.env.REACT_APP_DB_HOST}/api/todo/${targetItem.id}`,
       targetItem
     );
+
+    if(res.status === 200){
+      // 업데이트 상태 or 기타 원하는대로 코드 작성
+    }else{
+      console.error('update error');
+    }
   };
+
+
 
   return (
     <div className='App'>
       <AddTodo addItem={addItem} />
-      {/* <Todo />
-      <Todo />
-      <Todo /> */}
-      {todoItems.map((item) => {
-        console.log(item);
-        return (
-          <Todo
-            key={item.id}
-            item={item}
-            deleteItem={deleteItem}
-            updateItem={updateItem}
-          />
-        );
-      })}
+      <div className='left-todos'> {todoItems.length} Todos</div>
+      {todoItems.length > 0 ? (
+        todoItems.map((item) => {
+          console.log(item);
+          return (
+            <Todo
+              key={item.id}
+              item={item}
+              deleteItem={deleteItem}
+              updateItem={updateItem}
+            />
+          );
+        })
+      )  :( <p className='empty-todos'> Todo 추가해라</p>)}
+
     </div>
   );
 }
